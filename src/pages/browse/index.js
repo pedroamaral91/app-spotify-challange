@@ -1,39 +1,56 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Creators as PlaylistsActions } from '../../store/ducks/playlists';
 
 import {
   Container, Title, List, Playlist,
 } from './styles';
 
-const Browse = () => (
-  <Container>
-    <Title>Navegar</Title>
-    <List>
-      <Playlist to="/playlists/1">
-        <img
-          src="https://img1-placeit-net.s3-accelerate.amazonaws.com/uploads/stage/stage_image/21041/large_thumb_473-Techo-CD-Album-Cover.jpg"
-          alt="playlist"
-        />
-        <strong>Jazz nos fundos</strong>
-        <p>As melhores improvisações estão aqui!</p>
-      </Playlist>
-      <Playlist to="/playlists/1">
-        <img
-          src="https://img1-placeit-net.s3-accelerate.amazonaws.com/uploads/stage/stage_image/21041/large_thumb_473-Techo-CD-Album-Cover.jpg"
-          alt="playlist"
-        />
-        <strong>Jazz nos fundos</strong>
-        <p>As melhores improvisações estão aqui!</p>
-      </Playlist>
-      <Playlist to="/playlists/1">
-        <img
-          src="https://img1-placeit-net.s3-accelerate.amazonaws.com/uploads/stage/stage_image/21041/large_thumb_473-Techo-CD-Album-Cover.jpg"
-          alt="playlist"
-        />
-        <strong>Jazz nos fundos</strong>
-        <p>As melhores improvisações estão aqui!</p>
-      </Playlist>
-    </List>
-  </Container>
-);
+class Browse extends Component {
+  static propTypes = {
+    getPlaylistsRequest: PropTypes.func.isRequired,
+    playlists: PropTypes.shape({
+      data: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.number,
+          title: PropTypes.string,
+        }),
+      ),
+    }).isRequired,
+  };
 
-export default Browse;
+  componentDidMount() {
+    const { getPlaylistsRequest } = this.props;
+    getPlaylistsRequest();
+  }
+
+  render() {
+    const { playlists } = this.props;
+    return (
+      <Container>
+        <Title>Navegar</Title>
+        <List>
+          {playlists.data.map(playlist => (
+            <Playlist key={playlist.id} to={`/playlists/${playlist.id}`}>
+              <img src={playlist.thumbnail} alt="playlist" />
+              <strong>{playlist.title}</strong>
+              <p>{playlist.description}</p>
+            </Playlist>
+          ))}
+        </List>
+      </Container>
+    );
+  }
+}
+const mapStateToProps = state => ({
+  playlists: state.playlists,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators(PlaylistsActions, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Browse);
