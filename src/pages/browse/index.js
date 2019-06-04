@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Creators as PlaylistsActions } from '../../store/ducks/playlists';
+import Loading from '../../components/Loading';
 
 import {
   Container, Title, List, Playlist,
@@ -18,6 +19,7 @@ class Browse extends Component {
           title: PropTypes.string,
         }),
       ),
+      loading: PropTypes.bool,
     }).isRequired,
   };
 
@@ -30,7 +32,10 @@ class Browse extends Component {
     const { playlists } = this.props;
     return (
       <Container>
-        <Title>Navegar</Title>
+        <Title>
+Navegar
+          {this.props.playlists.loading && <Loading />}
+        </Title>
         <List>
           {playlists.data.map(playlist => (
             <Playlist key={playlist.id} to={`/playlists/${playlist.id}`}>
