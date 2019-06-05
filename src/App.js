@@ -9,6 +9,8 @@ import Routes from './routes';
 import { Wrapper, Container, Content } from './styles/components';
 import store from './store';
 
+import ErrorBox from './components/ErrorBox';
+
 const App = () => (
   <Provider store={store}>
     <BrowserRouter>
@@ -17,6 +19,7 @@ const App = () => (
         <Container>
           <Sidebar />
           <Content>
+            <ErrorBox />
             <Header />
             <Routes />
           </Content>
